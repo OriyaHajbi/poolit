@@ -1,0 +1,48 @@
+body {
+  background-image: url("")
+}
+
+.login-form {
+  display: block;
+  max-width: 90%;
+  margin: 5% auto;
+  width: 20rem;
+}
+
+.form-group label,
+.form-group input {
+  display: block;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.form-group input {
+  border: 1px solid black;
+  font: inherit;
+  border-radius: 2px;
+}
+
+.navbar {
+  background-color: rgb(109, 241, 241);
+}
+
+.navbar img {
+  width: 25px;
+}
+
+.navbar-right {
+  margin-left: auto;
+}
+
+.error {
+  background-color: rgb(243, 126, 126);
+  color: red;
+  border-radius: 5%;
+  margin: 10px 0px;
+}
+
+.error p {
+  font-size: 30px;
+  text-align: center;
+  flex: auto;
+}
