@@ -5,11 +5,12 @@ const axios = require('axios').default;
 
 function Register(){
     const navigate = useNavigate();
+    const [checked, setChecked] = useState(false);  
     const [user , setUser] = useState({
         email: "",
         password: "",
         repassword: "",
-        isCoach: false
+        isCoach: checked
     });
     const [error , setError] = useState("");
 
@@ -33,7 +34,7 @@ async function sendUserData(){
       email: user.email,
       password: user.password,
       repassword: user.repassword,
-      isCoach: user.isCoach
+      isCoach: checked ? true: false
     })
     .then((res) => {
       if (res.data === "User Exist"){
@@ -63,6 +64,11 @@ async function sendUserData(){
                     <div className="form-group">
                         <label>Re-password:</label>
                         <input onChange={updateUser} type="password" name="repassword" id="repassword"></input>
+                    </div>
+                    <div>
+                        <label>Coach?</label>
+                        <input type="checkbox"  onChange={e => { if (checked !== undefined)
+                        setChecked(e.target.checked)}}   />
                     </div>
                     <div className="text-center">
                         <button className="btn btn-primary " type="submit" onClick={sendUserData}>Register</button>

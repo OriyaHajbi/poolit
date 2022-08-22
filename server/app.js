@@ -24,7 +24,48 @@ const db = mongoose.connection;
 db.on("error" , (error) => console.log(error));
 db.once("open" , () => {
   console.log("Connect to DB");
+  User.find({} , async function(err , foundUser){
+    if(foundUser.length === 0){
 
+        bcrypt.hash("manager" , saltRounds , function(err , hash){
+          const yotam = new User({
+              username: "yotam@poolit.com",
+              password: hash,
+              isCoach: true,
+              swimmingStyle: ["Front crawl" , "Breaststroke", "Backstroke", "Butterfly"],
+              workDays:[2,5],
+              workHours:[16,20]
+          });
+          yotam.save();
+        }
+      )
+        bcrypt.hash("manager" , saltRounds , function(err , hash){
+          const yoni = new User({
+              username: "yoni@poolit.com",
+              password: hash,
+              isCoach: true,
+              swimmingStyle: ["Breaststroke", "Butterfly"],
+              workDays:[3,4,5],
+              workHours:[8,15]
+          });
+          yoni.save();
+        }
+      )
+        bcrypt.hash("manager" , saltRounds , function(err , hash){
+          const joni = new User({
+              username: "joni@poolit.com",
+              password: hash,
+              isCoach: true,
+              swimmingStyle: ["Front crawl" , "Breaststroke", "Backstroke", "Butterfly"],
+              workDays:[1,3,5],
+              workHours:[10,19]
+          });
+          joni.save();
+        }
+      )
+
+    }
+  })
 
 });
 

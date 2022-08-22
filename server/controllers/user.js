@@ -8,6 +8,7 @@ exports.postNewUser = async (req, res) => {
 
     const email = req.body.email;
     const password = req.body.password;
+    const isCoach = req.body.isCoach;
     const errors = validationResult(req);
     if (!errors.isEmpty()){
         return res.send(errors);
@@ -21,7 +22,7 @@ exports.postNewUser = async (req, res) => {
                 const user = new User({
                     username: email,
                     password: hash,
-                    isCoach: false
+                    isCoach: isCoach
                 });
                 user.save();
                 return res.send(user);
@@ -48,3 +49,15 @@ exports.postUserLogin = async (req, res) => {
         }
     })
 }
+
+exports.getCoachList = async (req , res) =>{
+    const isCoach = req.query.isCoach;
+
+    User.find({isCoach:isCoach} ,function(err , foundCoach){
+        if (!foundCoach){
+            return res.json("No Coach")
+        }else{
+            return res.json(foundCoach);
+        }
+    } )
+} 

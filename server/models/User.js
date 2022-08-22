@@ -13,7 +13,20 @@ const userSchema = new mongoose.Schema({
   isCoach: {
     type: Boolean,
     required: true,
+  },
+  swimmingStyle: {
+    type: Array,
+    required: false,
+  },
+  workDays: {
+    type: Array,
+    required: false,
+  },
+  workHours: {
+    type: Array,
+    required: false,
   }
+  
 });
 
 
