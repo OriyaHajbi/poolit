@@ -3,11 +3,22 @@
 }
 
 .left {
+    display: flex;
     margin-right: 10px;
+    width: 150px;
+    float: left;
+}
+
+
+
+.right {
+    display: flex;
+    justify-content: space-between;
 }
 
 .calendar {
     flex-grow: 1;
+    margin-left: 150px;
 }
 
 .calendar_default_colheader_inner:hover {

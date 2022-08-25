@@ -5,6 +5,7 @@ const cors = require("cors");
 
 const User = require("./models/User");
 const UserRoutes = require("./routers/User");
+const EventRoutes = require("./routers/Event");
 
 const bcrypt = require("bcrypt")
 const saltRounds = 10;
@@ -71,6 +72,7 @@ db.once("open" , () => {
 
 
 app.use("/users" ,UserRoutes);
+app.use("/event" ,EventRoutes);
 
 app.get("/" ,function(req, res){
     
