@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const eventSchema = new mongoose.Schema({
-  
+
   username: {
     type: String,
     required: true,
@@ -16,8 +16,8 @@ const eventSchema = new mongoose.Schema({
   },
   days: {
     type: Number,
-    min:1,
-    max:5,
+    min: 1,
+    max: 5,
     required: true,
   },
   text: {
@@ -39,8 +39,14 @@ const eventSchema = new mongoose.Schema({
   weekNumber: {
     type: String,
     required: true,
+  },
+  countTrainees: {
+    type: Number,
+    min: 0,
+    max: 7,
+    required: true,
   }
-  
+
 });
 
 

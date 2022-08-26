@@ -16,8 +16,18 @@ class Calendar extends Component {
       timeRangeSelectedHandling: "Enabled",
       onTimeRangeSelected: async args => {
         const coaches = await this.getCoachList();
+
         const modal = await DayPilot.Modal.form([
-          { name: "Trainees", id: "trainees", type: "select", options: coaches.map(element => { return { name: element.username.split("@")[0], id: element.username.split("@")[0] } }) },
+          {
+            name: "Trainees", id: "trainees", type: "select", options: [
+              { name: "1", id: "1" },
+              { name: "3", id: "3" },
+              { name: "4", id: "4" },
+              { name: "5", id: "5" },
+              { name: "6", id: "6" },
+              { name: "7", id: "7" }
+            ]
+          },
           {
             name: "Swimming style", id: "style", type: "select", options: [
               { name: "Front crawl", id: "Front crawl" },
@@ -28,8 +38,7 @@ class Calendar extends Component {
           {
             name: "Lesson", id: "lesson", type: "select", options: [
               { name: "Private", id: "private" },
-              { name: "Group", id: "group" },
-              { name: "Mix - private & group", id: "mix" }]
+              { name: "Group", id: "group" }]
           },
           { name: "Coach", id: "coach", type: "select", options: coaches.map(element => { return { name: element.username.split("@")[0], id: element._id + "@@" + element.username.split("@")[0] } }) }
         ]);
@@ -38,9 +47,24 @@ class Calendar extends Component {
         this.checkEventDetails(modal, args);
       },
       eventDeleteHandling: "Update",
+      onEventDeleted: async args => {
+        console.log(args.e.data.id);
+        this.deleteEventById(args.e.data.id);
+
+      },
       onEventClick: async args => {
         const coaches = await this.getCoachList();
         const modal = await DayPilot.Modal.form([
+          {
+            name: "Update trainees", id: "trainees", type: "select", options: [
+              { name: "1", id: "1" },
+              { name: "3", id: "3" },
+              { name: "4", id: "4" },
+              { name: "5", id: "5" },
+              { name: "6", id: "6" },
+              { name: "7", id: "7" }
+            ]
+          },
           {
             name: "Update Swimming style", id: "style", type: "select", options: [
               { name: "Front crawl", id: "Front crawl" },
@@ -51,15 +75,15 @@ class Calendar extends Component {
           {
             name: "Update Lesson", id: "lesson", type: "select", options: [
               { name: "Private", id: "private" },
-              { name: "Group", id: "group" },
-              { name: "Mix - private & group", id: "mix" }]
+              { name: "Group", id: "group" }]
           },
-          { name: "Update Coach", id: "coach", type: "select", options: coaches.map(element => { return { name: element.username.split("@")[0], id: element._id } }) }
+          { name: "Update Coach", id: "coach", type: "select", options: coaches.map(element => { return { name: element.username.split("@")[0], id: element._id + "@@" + element.username.split("@")[0] } }) }
 
-        ], { first: args.e.data.first, last: args.e.data.last, style: args.e.data.style, lesson: args.e.data.lesson, coach: args.e.data.coach });
+        ], { style: args.e.data.style, lesson: args.e.data.lesson, coach: args.e.data.coach, trainees: args.e.data.countTrainees });
         if (!modal.result) { return; }
         const e = args.e;
-        e.data.text = modal.result.style + "-" + modal.result.lesson + "-" + modal.result.coach;
+        this.checkUpdateDetails(modal, args);
+        e.data.text = modal.result.style + "-" + modal.result.lesson + "-" + modal.result.coach.split("@@")[1];
         e.data.start = args.e.data.start;
         e.data.end = modal.result.lesson === "private" ? new DayPilot.Date(args.e.data.start.value).addMinutes(45) : new DayPilot.Date(args.e.data.start.value).addMinutes(60)
 
@@ -84,26 +108,6 @@ class Calendar extends Component {
     this.datePicker.select(today);
   }
 
-  loadGroups() {
-    const data = [
-      {
-        name: "Days", id: "days", days: [
-          { name: "Sunday", id: "1" },
-          { name: "Monday", id: "2" },
-          { name: "Tuesday", id: "3" },
-          { name: "Wednesday", id: "4" },
-          { name: "Thursday", id: "5" },
-        ]
-      },
-    ];
-    return data;
-  }
-
-  groupChanged(group) {
-    const columns = group.days;
-    const events = [];
-    this.calendar.update({ columns, events });
-  }
 
   next() {
     const current = this.datePicker.selectionDay;
@@ -115,6 +119,46 @@ class Calendar extends Component {
     const current = this.datePicker.selectionDay;
     const updated = current.addDays(-7);
     this.datePicker.select(updated);
+  }
+
+  checkUpdateDetails(modal, args) {
+    const details = {
+      text: modal.result.style + "-" + modal.result.lesson + "-" + modal.result.coach.split("@@")[1],
+      lesson: modal.result.lesson,
+      style: modal.result.style,
+      coach: modal.result.coach,
+      count: modal.result.trainees,
+      id: args.e.data.id,
+      start: args.e.data.start,
+      end: modal.result.lesson === "private" ? new DayPilot.Date(args.e.data.start.value).addMinutes(45) : new DayPilot.Date(args.e.data.start.value).addMinutes(60),
+      resource: args.e.data.start.getDayOfWeek() + 1,
+
+    }
+
+    const URL = 'http://localhost:4000/event/updateevent'; // for Local
+    axios.post(URL, details)
+      .then((res) => {
+        if (res.data === "Event updated") {
+          alert("Event updated");
+        } else {
+          alert("Event doesn't updated");
+        }
+      });
+  }
+
+  deleteEventById(id) {
+    const details = {
+      id: id
+    }
+    const URL = 'http://localhost:4000/event/deleteevent'; // for Local
+    axios.post(URL, details)
+      .then((res) => {
+        if (res.data === "Event deleted") {
+          alert("Event deleted");
+        } else {
+          alert("Event doesn't deleted");
+        }
+      });
   }
   gant() {
     DayPilot.Modal.prompt("Please enter week number:",)
@@ -150,12 +194,6 @@ class Calendar extends Component {
             const start = new DayPilot.Date(new Date(element.start), true);
             const end = new DayPilot.Date(new Date(element.end), true);
 
-
-            console.log(start);
-
-
-
-
             this.calendar.events.add({
               start: start.value,
               end: end.value,
@@ -165,6 +203,8 @@ class Calendar extends Component {
               lesson: element.lesson,
               style: element.style,
               coach: element.coach,
+              weekNumber: element.weekNumber,
+              countTrainees: element.countTrainees
             });
           });
         }
@@ -182,7 +222,8 @@ class Calendar extends Component {
       text: modal.result.style + "-" + modal.result.lesson + "-" + modal.result.coach.split("@@")[1],
       lesson: modal.result.lesson,
       style: modal.result.style,
-      coach: modal.result.coach
+      coach: modal.result.coach,
+      count: modal.result.trainees
     }
 
     const URL = 'http://localhost:4000/event/addevent'; // for Local
@@ -216,6 +257,8 @@ class Calendar extends Component {
           alert("Enter all fields");
         } else if (res.data === "There is another lesson in the pool.") {
           alert("There is another lesson in the pool.");
+        } else if (res.data === "The amount of trainees does not match the type of lesson.") {
+          alert("The amount of trainees does not match the type of lesson.");
         }
       });
   }
@@ -252,10 +295,11 @@ class Calendar extends Component {
             cellDuration={15}
             dayBeginsHour={8}
             dayEndsHour={20}
+            eventDeleteHandling={"Disabled"}
             viewType={"Week"}
+            eventRightClickHanding={"ContextMenu"}
             startDate={DayPilot.Date.today()}
             headerDateFormat={"dddd MMMM d, yyyy"}
-            allowEventOverlap={false}
             eventMoveHandling={'Disabled'}
             eventArrangement={'Cascade'}
             {...this.state}
