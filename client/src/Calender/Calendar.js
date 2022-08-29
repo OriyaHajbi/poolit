@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { DayPilot, DayPilotCalendar, DayPilotGantt, DayPilotNavigator } from "daypilot-pro-react";
-import { ResourceGroups } from "./ResourceGroups";
+// import { ResourceGroups } from "./ResourceGroups";
 
 const axios = require('axios').default;
 
@@ -11,8 +11,12 @@ class Calendar extends Component {
 
     this.calendarRef = React.createRef();
     this.datePickerRef = React.createRef();
+    this.ganttRef = React.createRef();
     this.addEventsToCalender();
+    // this.checkIfUserLoggedIn();
     this.state = {
+      startDayGantt: DayPilot.Date.today(),
+      eventsWeekGantt: [],
       timeRangeSelectedHandling: "Enabled",
       onTimeRangeSelected: async args => {
         const coaches = await this.getCoachList();
@@ -81,17 +85,15 @@ class Calendar extends Component {
 
         ], { style: args.e.data.style, lesson: args.e.data.lesson, coach: args.e.data.coach, trainees: args.e.data.countTrainees });
         if (!modal.result) { return; }
-        const e = args.e;
+        // const e = args.e;
         this.checkUpdateDetails(modal, args);
-        e.data.text = modal.result.style + "-" + modal.result.lesson + "-" + modal.result.coach.split("@@")[1];
-        e.data.start = args.e.data.start;
-        e.data.end = modal.result.lesson === "private" ? new DayPilot.Date(args.e.data.start.value).addMinutes(45) : new DayPilot.Date(args.e.data.start.value).addMinutes(60)
+        // e.data.text = modal.result.style + "-" + modal.result.lesson + "-" + modal.result.coach.split("@@")[1];
+        // e.data.start = args.e.data.start;
+        // e.data.end = modal.result.lesson === "private" ? new DayPilot.Date(args.e.data.start.value).addMinutes(45) : new DayPilot.Date(args.e.data.start.value).addMinutes(60)
 
-        this.calendar.events.update(e);
+        // this.calendar.events.update(e);
       },
     };
-
-
   }
 
   get calendar() {
@@ -100,6 +102,10 @@ class Calendar extends Component {
 
   get datePicker() {
     return this.datePickerRef.current.control;
+  }
+
+  get gantt() {
+    return this.ganttRef.current.control;
   }
 
   componentDidMount() {
@@ -140,6 +146,7 @@ class Calendar extends Component {
       .then((res) => {
         if (res.data === "Event updated") {
           alert("Event updated");
+          window.location.reload();
         } else {
           alert("Event doesn't updated");
         }
@@ -160,26 +167,49 @@ class Calendar extends Component {
         }
       });
   }
-  gant() {
-    DayPilot.Modal.prompt("Please enter week number:",)
+
+  async gant() {
+    const events = await DayPilot.Modal.prompt("Please enter week number:",)
       .then(function (args) {
         if (args.result) {
           const params = { week: args.result };
           const URL = 'http://localhost:4000/event/getweekevents'; // for Local
-          axios.get(URL, { params: params })
+          return axios.get(URL, { params: params })
             .then((res) => {
               if (res.data === "Invalid input") {
                 alert("Invalid input");
               } else if (res.data === "Doesn't have events in this week") {
                 alert("Doesn't have events in this week");
               } else {
-                console.log(res.data);
-
+                // console.log(res.data);
+                return res.data;
               }
             });
         }
       });
+    console.log(events);
+    if (!events || events.length < 1) {
+      alert("no events in this week");
+    } else {
+      // console.log(events.length);
+      // console.log(new DayPilot.Date(events[0].start).firstDayOfWeek("en-us"));
+      this.setState(prevState => ({
+        ...prevState,
+        startDayGantt: new DayPilot.Date(events[0].start).firstDayOfWeek("en-us"),
+        eventsWeekGantt: events
+      }))
+      console.log(events);
+      console.log(this.gantt.tasks);
+    }
   }
+
+  // checkIfUserLoggedIn() {
+  //   const URL = 'http://localhost:4000/users/login'; // for Local
+  //   axios.get(URL)
+  //     .then((res) => {
+  //       console.log(res);
+  //     });
+  // }
 
 
   addEventsToCalender() {
@@ -204,7 +234,9 @@ class Calendar extends Component {
               style: element.style,
               coach: element.coach,
               weekNumber: element.weekNumber,
-              countTrainees: element.countTrainees
+              countTrainees: element.countTrainees,
+              backColor: "#6df1f1",
+              barColor: "#6df1f1"
             });
           });
         }
@@ -241,6 +273,8 @@ class Calendar extends Component {
             lesson: details.lesson,
             style: details.style,
             coach: details.coach,
+            backColor: "#6df1f1",
+            barColor: "#6df1f1"
           });
           return res.data
         } else if (res.data === "Coach doent teach in this hours") {
@@ -259,6 +293,8 @@ class Calendar extends Component {
           alert("There is another lesson in the pool.");
         } else if (res.data === "The amount of trainees does not match the type of lesson.") {
           alert("The amount of trainees does not match the type of lesson.");
+        } else if (res.data === "Coach Teaching between this hours") {
+          alert("Coach Teaching between this hours");
         }
       });
   }
@@ -286,8 +322,8 @@ class Calendar extends Component {
       <div className={"wrap"}>
         <div className={"calendar"}>
           <div className={"toolbar"}>
-            <button onClick={ev => this.previous()}>Previous Week</button>
-            <button onClick={ev => this.next()}>Next Week</button>
+            <button className='btn btn-outline-primary' onClick={ev => this.previous()}>Previous Week</button>
+            <button className='btn btn-outline-primary' onClick={ev => this.next()}>Next Week</button>
           </div>
 
 
@@ -307,14 +343,12 @@ class Calendar extends Component {
           />
         </div>
         <div className={"left"}>
-          <div className='right'>
-            <button onClick={ev => this.gant()}>Extract Week Gant</button>
+          <div className={'right'}>
+            <button className='btn btn-outline-primary' onClick={ev => this.gant()}>Extract Week Gant</button>
           </div>
           <DayPilotNavigator
             selectMode={"week"}
             showWeekNumbers={"true"}
-            showMonths={1}
-            skipMonths={1}
             onTimeRangeSelected={args => {
               this.calendar.update({
                 startDate: args.day
@@ -325,7 +359,14 @@ class Calendar extends Component {
         </div>
         <div className='gantt'>
           <DayPilotGantt
-            days={30}
+            startDate={this.state.startDayGantt}
+            taskClickHandling={"Disabled"}
+            taskMoveHandling={"Disabled"}
+            taskResizeHandling={"Disabled"}
+            days={"5"}
+            cellWidth={200}
+            ref={this.ganttRef}
+            tasks={this.state.eventsWeekGantt}
           />
         </div>
       </div>

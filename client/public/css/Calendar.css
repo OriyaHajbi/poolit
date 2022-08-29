@@ -4,9 +4,10 @@
 
 .left {
     display: flex;
-    margin-right: 10px;
     width: 150px;
     float: left;
+    margin: 5px 0px;
+    width: 15%;
 }
 
 
@@ -14,11 +15,19 @@
 .right {
     display: flex;
     justify-content: space-between;
+    margin: 5px 0px;
 }
 
 .calendar {
+    justify-items: center;
+    display: flex;
     flex-grow: 1;
     margin-left: 150px;
+    width: 85%;
+}
+
+.calendar_default_main {
+    display: flex;
 }
 
 .calendar_default_colheader_inner:hover {

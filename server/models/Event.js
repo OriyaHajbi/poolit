@@ -6,6 +6,10 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  id: {
+    type: String,
+    required: true,
+  },
   start: {
     type: Date,
     required: true,
@@ -37,7 +41,9 @@ const eventSchema = new mongoose.Schema({
     required: true,
   },
   weekNumber: {
-    type: String,
+    type: Number,
+    min: 1,
+    max: 53,
     required: true,
   },
   countTrainees: {

@@ -83,7 +83,7 @@ exports.getWeekEvents = async (req, res) => {
     const week = parseInt(req.query.week);
     // console.log("in server week is: " + week);
 
-    if (!week || week < 0 || week > 60) {
+    if (!week || week < 1 || week > 53) {
         return res.json("Invalid input");
     }
     Event.find({ weekNumber: week }, function (err, foundEvents) {
@@ -147,35 +147,41 @@ exports.addEvent = async (req, res) => {
             if (numberRes) {
                 const timeAvailableRes = await isTimeAvailable(start, end, lesson);
                 if (timeAvailableRes === 0) {
-                    const styleRes = isCoachKnowStyle(foundCoach, style);
-                    if (styleRes) {
-                        const dayRes = isCoachTeachingInDay(foundCoach, resource);
-                        if (dayRes) {
-                            const hourRes = isCoachTeachingBetweenHours(foundCoach, start, end);
-                            if (hourRes) {
-                                console.log("Event is correct");
-                                const event = new Event({
-                                    username: id,
-                                    start: new Date(start),
-                                    end: new Date(end),
-                                    days: parseInt(resource),
-                                    text: text,
-                                    lesson: lesson,
-                                    style: style,
-                                    coach: coach,
-                                    weekNumber: weekNumber,
-                                    countTrainees: countTrainees
-                                });
-                                event.save();
-                                return res.json("ok");
+                    const coachTeachingRes = await isCoachTeachingNow(start, end, foundCoach);
+                    if (coachTeachingRes) {
+                        const styleRes = isCoachKnowStyle(foundCoach, style);
+                        if (styleRes) {
+                            const dayRes = isCoachTeachingInDay(foundCoach, resource);
+                            if (dayRes) {
+                                const hourRes = isCoachTeachingBetweenHours(foundCoach, start, end);
+                                if (hourRes) {
+                                    console.log("Event is correct");
+                                    const event = new Event({
+                                        username: id,
+                                        id: id,
+                                        start: new Date(start),
+                                        end: new Date(end),
+                                        days: parseInt(resource),
+                                        text: text,
+                                        lesson: lesson,
+                                        style: style,
+                                        coach: coach,
+                                        weekNumber: parseInt(weekNumber),
+                                        countTrainees: countTrainees
+                                    });
+                                    event.save();
+                                    return res.json("ok");
+                                } else {
+                                    return res.json("Coach doent teach in this hours");
+                                }
                             } else {
-                                return res.json("Coach doent teach in this hours");
+                                return res.json("Coach doent teach in this day");
                             }
                         } else {
-                            return res.json("Coach doent teach in this day");
+                            return res.json("Coach doent teach this swimming style");
                         }
                     } else {
-                        return res.json("Coach doent teach this swimming style");
+                        return res.json("Coach Teaching between this hours");
                     }
                 } else {
                     return res.json("There is another lesson in the pool.");
@@ -187,6 +193,18 @@ exports.addEvent = async (req, res) => {
     })
 }
 
+async function isCoachTeachingNow(start, end, foundCoach) {
+    const foundEvents = await Event.find({ start: { $gt: new Date(start), $lt: new Date(end) } });
+    if (!foundEvents || foundEvents.length < 1) {
+        return 1;
+    }
+    // console.log(foundEvents[0].coach.split("@@")[0]);
+    // console.log(foundCoach._id.toString());
+
+    const coachTeachId = foundEvents[0].coach.split("@@")[0];
+    const newCoachId = foundCoach._id.toString();
+    return coachTeachId === newCoachId ? 0 : 1;
+}
 
 async function isTimeAvailable(start, end, lesson) {
     var myRes;
@@ -237,6 +255,7 @@ function isCoachTeachingBetweenHours(foundCoach, start, end) {
     const endHourMinutes = parseInt(end.split("T")[1].split(":")[1]);
 
     const coachStartHour = foundCoach.workHours[0];
+    // console.log(new Date(2022, 11, 11, coachStartHour, 0, 0).getHours());
     const coachEndHour = foundCoach.workHours[1];
 
     if (startHour < coachStartHour || endHour > coachEndHour) {

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const eventController = require("../controllers/event");
 const { check } = require("express-validator");
+const isAuth = require("../middleware/is-auth");
 
 
 router.post("/addevent", eventController.addEvent);
