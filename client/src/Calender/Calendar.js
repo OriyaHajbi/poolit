@@ -322,8 +322,8 @@ class Calendar extends Component {
       <div className={"wrap"}>
         <div className={"calendar"}>
           <div className={"toolbar"}>
-            <button className='btn btn-outline-primary' onClick={ev => this.previous()}>Previous Week</button>
-            <button className='btn btn-outline-primary' onClick={ev => this.next()}>Next Week</button>
+            <button className='btn btn-primary' onClick={ev => this.previous()}>Previous Week</button>
+            <button className='btn btn-primary' onClick={ev => this.next()}>Next Week</button>
           </div>
 
 
@@ -342,9 +342,9 @@ class Calendar extends Component {
             ref={this.calendarRef}
           />
         </div>
-        <div className={"left"}>
+        <div className={"navigator"}>
           <div className={'right'}>
-            <button className='btn btn-outline-primary' onClick={ev => this.gant()}>Extract Week Gant</button>
+            <button className='btn btn-primary' onClick={ev => this.gant()}>Extract Week Gant</button>
           </div>
           <DayPilotNavigator
             selectMode={"week"}
@@ -357,14 +357,14 @@ class Calendar extends Component {
             ref={this.datePickerRef}
           />
         </div>
-        <div className='gantt'>
+        <div className={'gantt'}>
           <DayPilotGantt
             startDate={this.state.startDayGantt}
             taskClickHandling={"Disabled"}
             taskMoveHandling={"Disabled"}
             taskResizeHandling={"Disabled"}
             days={"5"}
-            cellWidth={200}
+            cellWidth={parseInt(window.innerWidth / 5)}
             ref={this.ganttRef}
             tasks={this.state.eventsWeekGantt}
           />

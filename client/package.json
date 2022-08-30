@@ -4,17 +4,21 @@
   "private": true,
   "dependencies": {
     "@daypilot/daypilot-lite-javascript": "^3.10.1",
+    "@react-three/drei": "^9.24.4",
+    "@react-three/fiber": "^8.6.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.27.2",
     "daypilot-pro-react": "https://npm.daypilot.org/daypilot-pro-react/trial/2022.3.5416.tar.gz",
     "http-proxy-middleware": "^2.0.6",
+    "mdb-react-ui-kit": "^4.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "react-select": "^5.4.0",
+    "three": "^0.143.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -40,7 +40,7 @@ exports.getUserLogin = async (req, res) => {
 
 exports.postUserLogout = async (req, res) => {
     req.session.destroy((err) => {
-        console.log(err);
+        // console.log(err);
         return res.json("session deleted");
     });
 }
@@ -59,7 +59,7 @@ exports.postUserLogin = async (req, res) => {
                 if (result === true) {
                     req.session.isLoggedIn = true;
                     req.session.user = foundUser;
-                    console.log(req.session);
+                    // console.log(req.session);
                     return res.json(foundUser);
                 } else {
                     return res.json("incorrect password");

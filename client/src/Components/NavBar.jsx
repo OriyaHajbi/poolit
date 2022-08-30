@@ -24,6 +24,15 @@ function NavBar() {
     }
 
 
+    function homeAndLogout() {
+        const URL = 'http://localhost:4000/users/logout'; // for Local
+        axios.post(URL)
+            .then((res) => {
+                localStorage.setItem('isLoggedIn', 'false');
+                setLogged(false);
+                navigate("/");
+            });
+    }
     function logOut() {
         const URL = 'http://localhost:4000/users/logout'; // for Local
         axios.post(URL)
@@ -37,7 +46,7 @@ function NavBar() {
     return <div>
         <nav className="navbar">
 
-            <span className="navbar-brand">Poolit <a href="/"><img src="photos/swimming-logo.ico" alt="Poolit Logo"></img></a></span>
+            <span className="navbar-brand">Poolit <a href="/" onClick={homeAndLogout}><img src="photos/swimming-logo.ico" alt="Poolit Logo"></img></a></span>
             <div className="">
                 <ul className="navbar-nav ml-auto">
                     <li className="nav-item">

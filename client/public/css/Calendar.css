@@ -2,7 +2,7 @@
     display: flex;
 }
 
-.left {
+.navigator {
     display: flex;
     width: 150px;
     float: left;

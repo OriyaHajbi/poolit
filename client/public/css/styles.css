@@ -1,5 +1,26 @@
 body {
-  background-image: url("")
+  background-image: url("//static.vecteezy.com/system/resources/previews/003/804/860/non_2x/blue-and-clear-water-texture-swimming-pool-rippled-water-background-free-vector.jpg")
+    /* background-image: url("//w7.pngwing.com/pngs/315/72/png-transparent-water-illustration-water-resources-swimming-pool-sea-pattern-seawater-texture-blue-computer.png") */
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+canvas {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.card.card-body {
+
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .login-form {
@@ -7,6 +28,13 @@ body {
   max-width: 90%;
   margin: 5% auto;
   width: 20rem;
+}
+
+.home-form {
+  display: block;
+  max-width: 90%;
+  margin: 1% auto;
+  width: 30rem;
 }
 
 .form-group label,
@@ -23,7 +51,7 @@ body {
 }
 
 .navbar {
-  background-color: rgb(109, 241, 241);
+  /* background-color: rgb(109, 241, 241); */
 }
 
 .navbar img {
@@ -45,4 +73,32 @@ body {
   font-size: 30px;
   text-align: center;
   flex: auto;
+}
+
+.center {
+  text-align: center;
+}
+
+.coach-card {
+  margin: 4% 7%;
+  width: 20%;
+}
+
+.cards {
+  display: flex;
+  flex-direction: row;
+}
+
+.card-body {
+  background-color: #46b2d9;
+  background-image: url("https://www.transparenttextures.com/patterns/foggy-birds.png");
+}
+
+.header {
+  background-color: #46b2d9;
+  background-image: url("https://www.transparenttextures.com/patterns/foggy-birds.png");
+}
+
+img {
+  border-radius: 50%;
 }
