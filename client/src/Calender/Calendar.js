@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { DayPilot, DayPilotCalendar, DayPilotGantt, DayPilotNavigator } from "daypilot-pro-react";
-// import { ResourceGroups } from "./ResourceGroups";
 
 const axios = require('axios').default;
 
@@ -13,7 +12,6 @@ class Calendar extends Component {
     this.datePickerRef = React.createRef();
     this.ganttRef = React.createRef();
     this.addEventsToCalender();
-    // this.checkIfUserLoggedIn();
     this.state = {
       startDayGantt: DayPilot.Date.today(),
       eventsWeekGantt: [],
@@ -85,12 +83,8 @@ class Calendar extends Component {
 
         ], { style: args.e.data.style, lesson: args.e.data.lesson, coach: args.e.data.coach, trainees: args.e.data.countTrainees });
         if (!modal.result) { return; }
-        // const e = args.e;
         this.checkUpdateDetails(modal, args);
-        // e.data.text = modal.result.style + "-" + modal.result.lesson + "-" + modal.result.coach.split("@@")[1];
-        // e.data.start = args.e.data.start;
-        // e.data.end = modal.result.lesson === "private" ? new DayPilot.Date(args.e.data.start.value).addMinutes(45) : new DayPilot.Date(args.e.data.start.value).addMinutes(60)
-        // this.calendar.events.update(e);
+
       },
     };
   }
@@ -181,7 +175,6 @@ class Calendar extends Component {
               } else if (res.data === "Doesn't have events in this week") {
                 alert("Doesn't have events in this week");
               } else {
-                // console.log(res.data);
                 return res.data;
               }
             });
@@ -191,8 +184,7 @@ class Calendar extends Component {
     if (!events || events.length < 1) {
       alert("no events in this week");
     } else {
-      // console.log(events.length);
-      // console.log(new DayPilot.Date(events[0].start).firstDayOfWeek("en-us"));
+
       this.setState(prevState => ({
         ...prevState,
         startDayGantt: new DayPilot.Date(events[0].start).firstDayOfWeek("en-us"),
@@ -203,15 +195,6 @@ class Calendar extends Component {
     }
   }
 
-  // checkIfUserLoggedIn() {
-  //   const URL = 'http://localhost:4000/users/login'; // for Local
-  //   axios.get(URL)
-  //     .then((res) => {
-  //       console.log(res);
-  //     });
-  // }
-
-
   addEventsToCalender() {
     const URL = 'http://localhost:4000/event/getevents'; // for Local
     axios.get(URL)
@@ -219,7 +202,6 @@ class Calendar extends Component {
         if (res.data === "No events") {
           console.log("No Coach");
         } else {
-          // console.log(res.data);
           res.data.forEach(element => {
             const start = new DayPilot.Date(new Date(element.start), true);
             const end = new DayPilot.Date(new Date(element.end), true);

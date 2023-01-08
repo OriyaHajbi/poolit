@@ -24,10 +24,6 @@ function Login() {
     });
   }
 
-
-
-
-
   async function sendUserData() {
 
     const URL = 'http://localhost:4000/users/login'; // for Local
@@ -43,7 +39,6 @@ function Login() {
         } else if (res.data === "incorrect password") {
           setError(res.data);
         } else if (res.data.username) {
-          // document.cookie = `isLoggedIn=true`
           localStorage.setItem('isLoggedIn', 'true');
           navigate("/main");
         } else {
