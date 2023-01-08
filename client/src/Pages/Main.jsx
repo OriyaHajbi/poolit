@@ -2,11 +2,11 @@ import React from "react";
 import Calender from "../Calender/Calendar";
 
 
-function Main(){
+function Main() {
 
-    return  <div>
-                <Calender/>
-            </div>
+    return <div>
+        <Calender />
+    </div>
 }
 
 

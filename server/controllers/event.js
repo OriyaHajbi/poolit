@@ -25,7 +25,9 @@ exports.updateEvent = async (req, res) => {
     const end = req.body.end;
     const days = req.body.resource;
 
-    Event.find({ username: eventId }, function (err, foundEvent) {
+
+
+    Event.find({ username: eventId }, (err, foundEvent) => {
         if (!foundEvent) {
             console.log("No Event Found");
         } else {

@@ -90,7 +90,6 @@ class Calendar extends Component {
         // e.data.text = modal.result.style + "-" + modal.result.lesson + "-" + modal.result.coach.split("@@")[1];
         // e.data.start = args.e.data.start;
         // e.data.end = modal.result.lesson === "private" ? new DayPilot.Date(args.e.data.start.value).addMinutes(45) : new DayPilot.Date(args.e.data.start.value).addMinutes(60)
-
         // this.calendar.events.update(e);
       },
     };
@@ -110,8 +109,9 @@ class Calendar extends Component {
 
   componentDidMount() {
     const date = new Date();
-    const today = date.getFullYear() + "-" + (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1) + "-" + date.getDate();
-    this.datePicker.select(today);
+    const newDate = date.getFullYear() + "-" + (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1) + "-" + (date.getDate() < 10 ? "0" + date.getDate() : date.getDate());
+
+    this.datePicker.select(newDate);
   }
 
 
